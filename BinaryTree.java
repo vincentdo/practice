@@ -1,3 +1,5 @@
+import java.util.*;
+
 public class BinaryTree {
 
 	class Node {
@@ -12,7 +14,7 @@ public class BinaryTree {
 		}
 	}
 
-	private Node root;
+	public Node root;
 
 	public BinaryTree() {
 		root = null;
@@ -20,20 +22,43 @@ public class BinaryTree {
 
 	// Recursive
 	public void addNode(int data, Node current) {
-		if (current == null) current = new Node(data);
-		if (current.data > data) {
-			addNode(data, current.right);
-		} else addNode(data, current.left);
+		if (current == null) {
+			current = new Node(data);
+		}
+		else {
+			if (current.data > data) {
+				if (current.left != null) addNode(data, current.left);
+				else current.left = new Node(data);
+			}
+			else {
+				if (current.right != null) addNode(data, current.right);
+				else current.right = new Node(data);
+			}
+		}
 	}
 	
 	// Iterative
 	public void addNode(int data) {
+		if (root == null) {
+			root = new Node(data);
+		}
 		Node cur = root;
 		while (cur != null) {
-			if (cur.data > data) cur = cur.right;
-			else cur = cur.left;
+			if (cur.data > data) {
+				if (cur.left != null) cur = cur.left;
+				else {
+					cur.left = new Node(data);
+					return;
+				}
+			}
+			else {
+				if (cur.right != null) cur = cur.right;
+				else {
+					cur.right = new Node(data);
+					return;
+				}
+			}	
 		}
-		cur = new Node(data);
 	}
 
 	// Recursive
@@ -42,8 +67,8 @@ public class BinaryTree {
 			return false;
 		} else if (current.data == data) return true;
 
-		if (current.data > data) contains(data, current.right);
-		else contains(data, current.left);
+		if (current.data > data) return contains(data, current.right);
+		else return contains(data, current.left);
 	}
 
 	// Iterative
@@ -55,5 +80,84 @@ public class BinaryTree {
 			else cur = cur.left;
 		}
 		return false;
+	}
+
+	// Recursive
+	public String preOrderTraversal(Node current) {
+
+		if (current != null) {
+			return current.data + " " + preOrderTraversal(current.left) + " " + preOrderTraversal(current.right);
+		}
+		else return "";
+	}
+
+	// Iterative
+	public String preOrderTraversal() {
+		String res = "";
+		Stack<Node> stack = new Stack<Node>();
+
+		Node cur = root;
+
+		while (!stack.empty() || cur != null) {
+			if (cur != null) {
+				res += cur.data + " ";
+				if (cur.right != null) {
+					stack.push(cur.right);
+				}	
+				cur = cur.left;
+			}
+			else cur = stack.pop();
+			
+		}
+		return res;
+	}
+
+	// Recursive
+	public String inOrderTraversal(Node current) {
+		if (current != null) {
+			return inOrderTraversal(current.left) + " " + current.data + " " + inOrderTraversal(current.right);
+		}
+		else return " ";
+	}
+
+	// Iterative
+	public String inOrderTraversal() {
+		String res = "";
+		Stack<Node> stack = new Stack<Node>();
+
+		Node cur = root;
+
+		while (!stack.empty() || cur != null) {
+			if (cur != null) {
+				stack.push(cur);
+				cur = cur.left;
+			}
+			else {
+				cur = stack.pop();
+				res += cur.data + " ";
+				cur = cur.right;
+			}
+		}
+		return res;
+	}
+
+	public static void main(String[] args) {
+
+		BinaryTree tree = new BinaryTree();
+
+		tree.addNode(5);
+
+		for (int i = 0; i < 10; i++) {
+			if (i != 5) {
+				tree.addNode(i);
+			}
+		}
+
+		System.out.println("Printing preOrder: ");
+		System.out.println(tree.preOrderTraversal());
+
+		System.out.println("Printing inOrder: ");
+		System.out.println(tree.inOrderTraversal());
+
 	}
 }
