@@ -141,17 +141,40 @@ public class BinaryTree {
 		return res;
 	}
 
+	public int maxDepth(Node node) {
+		if (node == null) {
+			return 0;
+		}
+		return 1 + Math.max( maxDepth(node.left), maxDepth(node.right) );
+	}
+
+	public int minDepth(Node node) {
+		if (node == null) {
+			return 0;
+		}
+		return 1 + Math.min( minDepth(node.left), minDepth(node.right) );
+	}
+
+	public boolean isBalanced() {
+		System.out.println("Max: " + maxDepth(root));
+		System.out.println("Min: " + minDepth(root));
+
+		return (maxDepth(root) - minDepth(root) <= 1);
+	}
+
 	public static void main(String[] args) {
 
 		BinaryTree tree = new BinaryTree();
 
 		tree.addNode(5);
 
-		for (int i = 0; i < 10; i++) {
+		for (int i = 0; i < 11; i++) {
 			if (i != 5) {
 				tree.addNode(i);
 			}
 		}
+
+		System.out.println(tree.isBalanced());
 
 		System.out.println("Printing preOrder: ");
 		System.out.println(tree.preOrderTraversal());
