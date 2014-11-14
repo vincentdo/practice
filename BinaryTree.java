@@ -12,6 +12,10 @@ public class BinaryTree {
 			left = null;
 			right = null;
 		}
+
+		public String toString() {
+			return "{" + this.data + "}";
+		}
 	}
 
 	public Node root;
@@ -162,6 +166,43 @@ public class BinaryTree {
 		return (maxDepth(root) - minDepth(root) <= 1);
 	}
 
+	private Node buildMinBST(int min, int max, int[] arr) {
+		if (arr.length == 0) return null;
+		if (max < min) return null;
+		int mid = (min + max) / 2;
+		Node newNode = new Node(arr[mid]);
+
+		newNode.left = buildMinBST(min, mid - 1, arr);
+		newNode.right = buildMinBST(mid + 1, max, arr);
+		return newNode;
+	}
+
+	public BinaryTree(int[] arr) {
+		root = buildMinBST(0, arr.length - 1, arr);
+	}
+
+	public static ArrayList<ArrayList<Node>> toList(BinaryTree tree) {
+		if (tree.root == null) return null;
+		ArrayList<ArrayList<Node>> list = new ArrayList<ArrayList<Node>>();
+		ArrayList<Node> currentLevel = new ArrayList<Node>();
+
+		currentLevel.add(tree.root);
+		while(!currentLevel.isEmpty()) {
+			ArrayList<Node> nextLevel = new ArrayList<Node>();
+			for (Node n : currentLevel) {
+				if (n.left != null)
+					nextLevel.add(n.left);
+				if (n.right != null) 
+					nextLevel.add(n.right);
+			}
+			list.add(currentLevel);
+			currentLevel = nextLevel;
+		}
+		return list;
+	}
+
+
+
 	public static void main(String[] args) {
 
 		BinaryTree tree = new BinaryTree();
@@ -174,13 +215,23 @@ public class BinaryTree {
 			}
 		}
 
-		System.out.println(tree.isBalanced());
+		int[] sorted = {0, 1, 2, 3, 4, 5};
 
-		System.out.println("Printing preOrder: ");
-		System.out.println(tree.preOrderTraversal());
+		System.out.println(toList(tree));
 
-		System.out.println("Printing inOrder: ");
-		System.out.println(tree.inOrderTraversal());
+		BinaryTree minTree = new BinaryTree(sorted);
+		// System.out.println(minTree.isBalanced());
+		System.out.println(toList(minTree));
+
+		// System.out.println(minTree.preOrderTraversal(minTree.root));
+
+		// System.out.println(tree.isBalanced());
+
+		// System.out.println("Printing preOrder: ");
+		// System.out.println(tree.preOrderTraversal());
+
+		// System.out.println("Printing inOrder: ");
+		// System.out.println(tree.inOrderTraversal());
 
 	}
 }
